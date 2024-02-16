@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-// const routes = require('./routes/apiRoutes')
+const routes = require('./routes/apiRoutes')
 require('dotenv').config()
 const cors = require('cors');
 const patient_mongodb_url = process.env.HOSPITAL_MONGODB_URL
@@ -10,7 +10,7 @@ const port = process.env.PORT || 8000
 app.use(cors());
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-// app.use('/api/hospital/', routes)
+app.use('/api/hospital/', routes)
 
 app.listen(port, async () => {
   // connecting to the patient database
