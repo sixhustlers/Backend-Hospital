@@ -1,54 +1,53 @@
-const mongoose=require('mongoose');
-const axios=require('axios');
-const {patientTracksSchema}=require('../models/patientTracksSchema');
+const mongoose = require('mongoose')
+const axios = require('axios')
+const { patientTracksSchema } = require('../models/patientTracksSchema')
 require('dotenv').config()
 const BACKEND_PATIENT_HOST = process.env.BACKEND_PATIENT_HOST //http://localhost:5000
 
-exports.patientBookingRequests=async(req,res)=>{
-    try{
-        const {
-          name,
-          age,
-          sex,
-          blood_group,
-          weight,
-          height,
-          patient_id,
-          doctor_id,
-          doctor_name,
-          time_slots,
-          temporary_symptoms,
-          hospital_id,
-        } = req.body;
-        console.log(req.body);
-        const patient= mongoose.model('patienttracks', patientTracksSchema);
-        const new_patient=new patient({
-            patient_id,
-            patient_details:
-            {   name:name,
-                age:age,
-                sex:sex,
-                blood_group:blood_group,
-                height:height,
-                weight:weight,
-                temporary_symptoms:temporary_symptoms,
-                time_slots:time_slots
-            },
-            doctor_id,
-            doctor_name,
-            hospital_id,
-            is_appointment_alloted:false,
-            is_patient_diagnosed:false,
-        });
-        await new_patient.save();
-        res.status(200).json({message:"Wait for the Confirmation"});
+exports.patientBookingRequests = async (req, res) => {
+  try {
+    const {
+      name,
+      age,
+      sex,
+      blood_group,
+      weight,
+      height,
+      patient_id,
+      doctor_id,
+      doctor_name,
+      time_slots,
+      temporary_symptoms,
+      hospital_id,
+    } = req.body
+    console.log(req.body)
+    const patient = mongoose.model('patienttracks', patientTracksSchema)
+    const new_patient = new patient({
+      patient_id,
+      patient_details: {
+        name: name,
+        age: age,
+        sex: sex,
+        blood_group: blood_group,
+        height: height,
+        weight: weight,
+        temporary_symptoms: temporary_symptoms,
+        time_slots: time_slots,
+      },
+      doctor_id,
+      doctor_name,
+      hospital_id,
+      is_appointment_alloted: false,
+      is_patient_diagnosed: false,
+    })
+    await new_patient.save()
+    res.status(200).json({ message: 'Wait for the Confirmation' })
 
-        // as soon as the details are saved, the list of patient Queue should be updated
-    }
-    catch(err){
-       console.log(err.message);
-        res.status(500).json({message:err.message});
-    }
+    // as soon as the details are saved, the list of patient Queue should be updated
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).json({ message: err.message })
+  }
 }
 
 exports.patientAppointmentResponse = async (req, res) => {
@@ -72,7 +71,6 @@ exports.patientAppointmentResponse = async (req, res) => {
 
       const details = {
         appointment_id,
-        patient_id,
         doctor_id,
         hospital_id,
         time_slots: patient.patient_details.time_slots,
@@ -81,7 +79,7 @@ exports.patientAppointmentResponse = async (req, res) => {
       console.log(details)
 
       const res = await axios.post(
-        `${BACKEND_PATIENT_HOST}/appointmentBookingUpdate/patient_id`,
+        `${BACKEND_PATIENT_HOST}/appointmentBookingUpdate/${patient_id}`,
         {
           details,
           bookingStatus,
