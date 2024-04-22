@@ -28,23 +28,31 @@ const patientTracksSchema = new mongoose.Schema({
       type: String,
     },
     time_slots: {
-      type: String,
+      event_start:{
+        type: Date, //store the date and time of the appointment in IST format
+      },
+      event_duration:{
+        type: Number,
+      },
     },
-    temporary_symptoms: {
-      type: String,
+    temporary_symptoms_disease_id_name: {
+      type: [String],
     },
   },
-  doctor_id: {
-    type: String,
+  doctor_id_name_department: {
+    type: [String],
   },
-  doctor_name: {
-    type: String,
+  // doctor_name: {
+  //   type: String,
+  // },
+  // department_name: {
+  //   type: String,
+  // },
+  disease_id_name:{
+    type: [String],
   },
-  department_name: {
-    type: String,
-  },
-  hospital_id: {
-    type: String,
+  hospital_id_name: {
+    type: [String],
     required: true,
   },
 
@@ -56,7 +64,7 @@ const patientTracksSchema = new mongoose.Schema({
     required: true,
   },
   is_patient_diagnosed: {
-    type: Boolean,
+    type: Boolean,        // need to be updated to true when the doctor finishes the appointemnt
     required: true,
   },
   appointment_cancelled: {
@@ -71,7 +79,9 @@ const patientTracksSchema = new mongoose.Schema({
     //         type:String,
     //     }
     // }
-
+    isCancelled: {
+      type: Boolean,
+    },
     byWhom: {
       type: [String],
       enum: ['patient', 'receptionist', 'doctor'],
